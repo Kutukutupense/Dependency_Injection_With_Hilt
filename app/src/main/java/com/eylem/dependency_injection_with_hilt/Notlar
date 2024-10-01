@@ -1,0 +1,55 @@
+Projeye Hilt Nasıl Eklenir:
+Hilt ile dependency injection yöntemini kullanmak için ilgili kütüphanelere ilk olarak eklemeleri yapacağız.
+1) Gradle(project) kısmına:
+id("com.google.dagger.hilt.android") version "2.48" apply false (versiyonun günceline bak yoksa hata verir)
+2)Gradle(module) kısmına:
+2a)plugins{} kısmına:
+id("kotlin-kapt")
+id("com.google.dagger.hilt.android")
+2b) Dependencies{} kısmına:
+implementation("com.google.dagger:hilt-android:2.48")
+kapt("com.google.dagger:hilt-android-compiler:2.48")
+(kapt kırmızı görünebilir sync edince düzelecek)
+
+sonrasında:
+ // Allow references to generated code
+           kapt {
+             correctErrorTypes = true
+           }
+
+kısmını kopyalıyoruz. Bu kısım kapt ile beraber arka planla birşeyler generate edilirken kapt
+java base bir yapı olduğu için kotlinde bazı derleme problemleri çıkarabiliyor. bu yapı bunu minimize
+etmeye yarıyor.(kapt kullanımı yerine zaten ksp kullanımı  yavaş yavaş geçmeye başladı)
+
+Hilt arka planda bağımlılıkları generate ederken bir application sınıfına ihtiyaç duyar. Bu yüzden
+biz hilt kullanırken projelerimizde bir application sınıfı oluştururuz. burada "App" isimli bir sınıf
+oluşturuyoruz ve Application sınıfından dan miras alıyor.
+Hemen arkasından Androidmanifest.xml dosyasını açıp <application içerisine:
+
+android:name=".App"
+kısmını ekliyoruz. burada noktadan önceki kısım ilgili package(paket) isminir. yani nokta yerine
+istersek ilgili paket ismimizi de koyabiliriz. Yani şöyle de yapabilirdik:
+android:name="com.eylem.dependency_injection_with_hilt.App"
+
+son olarak App sınıfına bir annotation koymamız gerek. Bunu koyduğumuzda hilt bizim için bağımlılıkları
+yönetmeye başlayacak:
+
+@HiltAndroidApp
+class App:Application() {
+}
+
+Hilt Nasıl Kullanılır:
+
+Bağımlılıklarının yönetilmesini isteiğimiz Activity ve fragmentlerin başına
+@AndroidEntryPoint
+annotasyonu konularak bunların yönetilmesini sağlarız.
+
+hilt i doğru kullanabilmek için en küçük parçadan genele doğru gitmek daha doğru olacak bu yüzden
+örnek sınıflarımızın tümünü önce oluşturuyoruz ki parçadan genele ilerleyebilelim.
+
+
+
+
+
+
+
